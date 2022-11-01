@@ -5,6 +5,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Spot app!!</Text>
+      <Text>Tähän rakentuu uusi appi vuonna 2022</Text>
       <StatusBar style="auto" />
     </View>
   );
