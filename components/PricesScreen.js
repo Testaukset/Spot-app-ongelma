@@ -20,10 +20,10 @@ const IN_DOM = '&in_Domain=10YFI-1--------U'
 const OUT_DOM = '&out_Domain=10YFI-1--------U'
 
 const PricesScreen = () => {
-
     const [answer, setAnswer] = useState();
     const [currentDate, setCurrentDate] = useState('');
     const [hour, setHour] = useState();
+    const [test, setTest] = useState();
 
     useEffect(() => {
         let curDate = moment()
@@ -36,14 +36,13 @@ const PricesScreen = () => {
             .then(data => {
                 let XMLParser = require('react-xml-parser');
                 const xml = new XMLParser().parseFromString(data);
-                // price tai point!!!
-                console.log(xml.getElementsByTagName('price'));
-                setAnswer(xml.getElementsByTagName('price'))
+                setAnswer(xml.getElementsByTagName('Price'))
+                setTest(xml.getElementsByTagName('Period'))
 
             })
             .catch(e => console.log(e))
 
-
+            //
 
         /*     let dateEnd = moment()
                 .utcOffset('+24:00')
@@ -70,62 +69,83 @@ const PricesScreen = () => {
     if (!answer) {
         return null;
     }
+    if (!test) {
+        return null;
+    }
+
+    //console.log(test)
     const today = answer.slice(0, 24).map(val => val.value);
 
 
+
+    // Tässä tarvin Jounin apuja ->
+    const testi = test.map(period => period.children);
+
+    const point = testi[1].map((point) => point.children.map(({ name, value }) => ({ [name]: value })))
+   
+    console.log(testi)
+    console.log(point)
+
+    let newData = []
+    for (let i = 2; i < point.length; i++) {
+
+    point[i].map((item) => newData.push({ price: item.price, time : item.position }));
+    }
+    console.log(newData)
+
     let sum = ''
     //for (let i = 0; i < today.length; i++)
-        if (hour === '01') {
-            sum = today[0]
-        } if (hour === '02') {
-            sum = today[1]
-        } if (hour === '03') {
-            sum = today[2]
-        } if (hour === '04') {
-            sum = today[3]
-        } if (hour === '05') {
-            sum = today[4]
-        } if (hour === '06') {
-            sum = today[5]
-        } if (hour === '07') {
-            sum = today[6]
-        } if (hour === '08') {
-            sum = today[7]
-        } if (hour === '09') {
-            sum = today[8]
-        } if (hour === '10') {
-            sum = today[9]
-        } if (hour === '11') {
-            sum = today[10]
-        } if (hour === '12') {
-            sum = today[11]
-        } if (hour === '13') {
-            sum = today[12]
-        } if (hour === '14') {
-            sum = today[13]
-        } if (hour === '15') {
-            sum = today[14]
-        } if (hour === '16') {
-            sum = today[15]
-        } if (hour === '17') {
-            sum = today[16]
-        } if (hour === '18') {
-            sum = today[17]
-        } if (hour === '19') {
-            sum = today[18]
-        } if (hour === '20') {
-            sum = today[19]
-        } if (hour === '21') {
-            sum = today[20]
-        } if (hour === '20') {
-            sum = today[19]
-        } if (hour === '21') {
-            sum = today[20]
-        }
+    if (hour === '01') {
+        sum = today[0]
+    } if (hour === '02') {
+        sum = today[1]
+    } if (hour === '03') {
+        sum = today[2]
+    } if (hour === '04') {
+        sum = today[3]
+    } if (hour === '05') {
+        sum = today[4]
+    } if (hour === '06') {
+        sum = today[5]
+    } if (hour === '07') {
+        sum = today[6]
+    } if (hour === '08') {
+        sum = today[7]
+    } if (hour === '09') {
+        sum = today[8]
+    } if (hour === '10') {
+        sum = today[9]
+    } if (hour === '11') {
+        sum = today[10]
+    } if (hour === '12') {
+        sum = today[11]
+    } if (hour === '13') {
+        sum = today[12]
+    } if (hour === '14') {
+        sum = today[13]
+    } if (hour === '15') {
+        sum = today[14]
+    } if (hour === '16') {
+        sum = today[15]
+    } if (hour === '17') {
+        sum = today[16]
+    } if (hour === '18') {
+        sum = today[17]
+    } if (hour === '19') {
+        sum = today[18]
+    } if (hour === '20') {
+        sum = today[19]
+    } if (hour === '21') {
+        sum = today[20]
+    } if (hour === '20') {
+        sum = today[19]
+    } if (hour === '21') {
+        sum = today[20]
+    }
 
-    
-    const todayMax = Math.max(...answer.slice(0,24).map(val => val.value));
-    const todayMin = Math.min(...answer.slice(0,24).map(val => val.value));
+
+    const todayMax = Math.max(...answer.slice(0, 24).map(val => val.value));
+    const todayMin = Math.min(...answer.slice(0, 24).map(val => val.value));
     console.log(todayMax)
     console.log(todayMin)
     console.log(currentDate)
@@ -159,7 +179,7 @@ const PricesScreen = () => {
                 <View width={Dimensions.get("window").width} >
                     <Grid >
                         <Col>
-                            <Text>Edellinen viikko ylin/alin</Text>
+                            <Text>Viime kuukauden ylin/alin</Text>
                             <ProgressChart
                                 data={data}
                                 width={130}
@@ -172,7 +192,7 @@ const PricesScreen = () => {
                             <Text style={styles.text}>{((100 + 24) / 100 * answer[3].value * 0.1).toFixed(2)} snt/kWh</Text>
                         </Col>
                         <Col>
-                            <Text>Edellinen kuukausi ylin/alin</Text>
+                            <Text>Viime kuukauden ylin/alin</Text>
                             <ProgressChart
                                 data={data}
                                 width={130}
